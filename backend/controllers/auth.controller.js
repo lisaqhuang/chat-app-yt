@@ -2,7 +2,25 @@ import User from '../models/user.model.js';
 import bcrypt from 'bcryptjs'; // For hashing passwords
 import generateTokenAndSetCookie from '../utils/generteToken.js';
 
-export const login = (req, res) => {
+export const login = async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const user = await User.findOne({ username });
+        const isPasswordValid = await bcrypt.compare(password, user?.password || '');
+        if (!user || !isPasswordValid) {
+            return res.status(400).json({ message: "Invalid username or password" });
+        }
+        generateTokenAndSetCookie(user._id, res); // Generate token and set cookie
+        res.status(200).json({
+            _id: user._id,
+            fullName: user.fullName,
+            username: user.username,
+            profilePic: user.profilePic
+        });
+    } catch (error) {
+        console.log('Error logging in user:', error);
+        res.status(500).json({ message: "Internal server error" });
+    }
     console.log('Login user:');
 }
 
