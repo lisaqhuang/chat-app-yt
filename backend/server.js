@@ -2,13 +2,15 @@ import authRoutes from './routes/auth.routes.js'; // Importing auth routes
 import dotenv from 'dotenv'; // For environment variable management
 import express from 'express'; // Importing express framework
 import connectToMongoDB from './db/connectToMongoDB.js'; // Importing MongoDB connection function
-
+import messageRoutes from './routes/message.routes.js'; // Importing message routes
+import cookieParser from 'cookie-parser';
 
 
 const app = express();
 dotenv.config();//用於可以讀取設定的env檔案
 
 app.use(express.json()); // Middleware to parse JSON request bodies
+app.use(cookieParser()); // Middleware to parse cookies
 
 const PORT = process.env.PORT || 5001;
 
@@ -18,6 +20,7 @@ const PORT = process.env.PORT || 5001;
 // })
 
 app.use("/api/auth", authRoutes)
+app.use("/api/messages", messageRoutes);
 app.listen(PORT, () => {
     connectToMongoDB();
     console.log(`Server is running on port ${PORT}`);
