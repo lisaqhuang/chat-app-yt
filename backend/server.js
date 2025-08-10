@@ -4,6 +4,7 @@ import express from 'express'; // Importing express framework
 import connectToMongoDB from './db/connectToMongoDB.js'; // Importing MongoDB connection function
 import messageRoutes from './routes/message.routes.js'; // Importing message routes
 import cookieParser from 'cookie-parser';
+import userRoutes from './routes/user.router.js'; // Importing user routes
 
 
 const app = express();
@@ -21,6 +22,7 @@ const PORT = process.env.PORT || 5001;
 
 app.use("/api/auth", authRoutes)
 app.use("/api/messages", messageRoutes);
+app.use("/api/users", userRoutes);
 app.listen(PORT, () => {
     connectToMongoDB();
     console.log(`Server is running on port ${PORT}`);
