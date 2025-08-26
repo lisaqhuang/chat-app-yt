@@ -5,12 +5,13 @@ import connectToMongoDB from './db/connectToMongoDB.js'; // Importing MongoDB co
 import messageRoutes from './routes/message.routes.js'; // Importing message routes
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/user.router.js'; // Importing user routes
-
+import cors from 'cors';
 
 const app = express();
 dotenv.config();//用於可以讀取設定的env檔案
 
 app.use(express.json()); // Middleware to parse JSON request bodies
+app.use(cors()); // Middleware to enable CORS
 app.use(cookieParser()); // Middleware to parse cookies
 
 const PORT = process.env.PORT || 5001;
