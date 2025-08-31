@@ -13,7 +13,8 @@ const useLogout = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                credentials: 'include' // Include cookies for authentication
 
             });
             const data = await res.json();
