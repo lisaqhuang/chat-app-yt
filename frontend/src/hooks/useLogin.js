@@ -13,7 +13,8 @@ const useLogin = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ username, password }),
+                credentials: 'include' // 這一行很重要！
             })
             const data = await res.json();
             if (data.error) {
