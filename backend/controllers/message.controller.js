@@ -1,16 +1,20 @@
 import Conversation from "../models/conversation.model.js";
 import Message from "../models/message.model.js";
+import { getReceiverSocketId, io } from "../socket/socket.js";
 
 export const sendMessage = async (req, res) => {
     try {
         const { message } = req.body;
+        console.log("Message to send:", message);
         const { id: receiverId } = req.params;
+        console.log("Receiver ID:", receiverId);
         const senderId = req.user._id; // Assuming you have user info in req.user
-
+        console.log("Sender ID:", senderId);
         //找到 senderId和receiverId的conversation
         let conversation = await Conversation.findOne({
             participants: { $all: [senderId, receiverId] },
         })
+        console.log("Found conversation:", conversation);
         //如果沒有找到,就建立一個新的conversation，並初始化 messages 為空陣列
         if (!conversation) {
             conversation = new Conversation({
@@ -29,9 +33,16 @@ export const sendMessage = async (req, res) => {
             //if (!conversation.messages) conversation.messages = []; // 防呆
             conversation.messages.push(newMessage._id);//message在mongodb中的_id
             //await conversation.save(); // 儲存 conversation
+            console.log("in newMessage")
         }
         await Promise.all([conversation.save(), newMessage.save()]); // 儲存 conversation 和 message
 
+        //SOCKET IO FUNCTIONALITY WILL GO HERE
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        if (receiverSocketId) {
+            //used to send event to a specific client
+            io.to(receiverSocketId).emit("newMessage", newMessage);
+        }
         res.status(201).json(newMessage);
 
     } catch (error) {

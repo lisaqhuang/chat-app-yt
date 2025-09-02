@@ -6,8 +6,9 @@ import messageRoutes from './routes/message.routes.js'; // Importing message rou
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/user.router.js'; // Importing user routes
 import cors from 'cors';
+import { app, server } from './socket/socket.js';
 
-const app = express();
+// const app = express();
 dotenv.config();//用於可以讀取設定的env檔案
 
 app.use(express.json()); // Middleware to parse JSON request bodies
@@ -27,7 +28,7 @@ const PORT = process.env.PORT || 5001;
 app.use("/api/auth", authRoutes)
 app.use("/api/messages", messageRoutes);
 app.use("/api/users", userRoutes);
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     connectToMongoDB();
     console.log(`Server is running on port ${PORT}`);
 });
